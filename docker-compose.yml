@@ -1,0 +1,54 @@
+# docker-compose.yml — Production
+
+version: "3.9"
+
+services:
+  # MongoDB
+  mongodb:
+    image: mongo:6
+    container_name: mongodb
+    restart: always
+    expose:
+      - "27017"
+    environment:
+      MONGO_INITDB_DATABASE: dd_db
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - mean_network
+
+  # Backend
+  backend:
+    image: ${DOCKER_USERNAME}/backend:prod
+    container_name: backend
+    restart: always
+    expose:
+      - "8080"
+    environment:
+      PORT: 8080
+      MONGO_URI: mongodb://mongodb:27017/dd_db
+    depends_on:
+      - mongodb
+    networks:
+      - mean_network
+
+  # Frontend
+  frontend:
+    image: ${DOCKER_USERNAME}/frontend:prod
+    container_name: frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - mean_network
+
+# Volumes
+volumes:
+  mongo_data:
+
+    # Networks
+networks:
+  mean_network:
+    driver: bridge

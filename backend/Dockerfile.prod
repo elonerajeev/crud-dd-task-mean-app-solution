@@ -1,0 +1,29 @@
+# Dockerfile For Backend App With Multi Build stage
+
+# FIRST STEPS
+FROM node:20-alpine AS Builder
+
+WORKDIR /App
+
+COPY package*.json ./
+
+RUN npm install --only=production
+
+COPY . .
+
+# SECOND STEPS
+FROM node:20-alpine AS Runner
+
+WORKDIR /App
+
+COPY --from=Builder /App/node_modules ./node_modules
+
+COPY --from=Builder /App/server.js ./
+
+COPY --from=Builder /App/app ./app
+
+COPY --from=Builder /App/package.json ./
+
+EXPOSE 8080
+
+CMD ["node", "server.js"]

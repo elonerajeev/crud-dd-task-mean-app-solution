@@ -1,0 +1,25 @@
+# ─── Sensitive / Secret files ──────────────────────────────
+.env
+*.env
+!.env.example
+
+# ─── Node ───────────────────────────────────────────────────
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# ─── Docker ─────────────────────────────────────────────────
+docker-compose.override.yml
+
+# ─── Angular build output ───────────────────────────────────
+frontend/dist/
+frontend/.angular/cache/
+
+# ─── OS files ───────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ─── IDE ────────────────────────────────────────────────────
+.vscode/
+.idea/

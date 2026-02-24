@@ -1,0 +1,27 @@
+1. RUN app and test 
+2. build Dockerfile for both
+3. Build docker image 
+4. push to hub 
+5. now write the docker-compose for entire app + also add monogDB
+
+  --> make CICD (github action + jenkinsfile) 
+       a. Build updated Docker images when changes are pushed to GitHub.
+       b. Push those images to Docker Hub.
+       c. Automatically pull the latest images and restart containers on the VM.
+       d. Set up Nginx as a reverse proxy.
+       e. The entire application should be accessible via port 80 (HTTPS and domain mapping not required).
+
+6. deploy this to ec2 
+7. 
+
+at last 
+
+All Dockerfiles and the Docker Compose file.
+The complete CI/CD configuration.
+A well-documented README.md with:
+Step-by-step setup and deployment instructions.
+Screenshots showcasing:
+CI/CD configuration and execution.
+Docker image build and push process.
+Application deployment and working UI.
+Nginx setup and infrastructure details.
