@@ -7,7 +7,6 @@ on:
 
 jobs:
 
-  # Build both images and push to Docker Hub
   build-and-push:
     name: Build and Push Images
     runs-on: ubuntu-latest
@@ -22,19 +21,16 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build backend image
-        run: docker build -f backend/Dockerfile.prod -t elonerajeev/mean-crud-backend:latest backend
+      - name: Build and push backend
+        run: |
+          docker build -f backend/Dockerfile.prod -t elonerajeev/mean-crud-backend:latest backend
+          docker push elonerajeev/mean-crud-backend:latest
 
-      - name: Push backend image
-        run: docker push elonerajeev/mean-crud-backend:latest
+      - name: Build and push frontend
+        run: |
+          docker build -f frontend/Dockerfile.prod -t elonerajeev/mean-crud-frontend:latest frontend
+          docker push elonerajeev/mean-crud-frontend:latest
 
-      - name: Build frontend image
-        run: docker build -f frontend/Dockerfile.prod -t elonerajeev/mean-crud-frontend:latest frontend
-
-      - name: Push frontend image
-        run: docker push elonerajeev/mean-crud-frontend:latest
-
-  # Runs only after build-and-push succeeds
   deploy-to-ec2:
     name: Deploy to EC2
     runs-on: ubuntu-latest
@@ -51,13 +47,15 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Copy compose file and deploy
+      - name: Deploy to EC2
         run: |
           scp docker-compose.yml ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:~/mean-app/
           ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
             cd ~/mean-app &&
+            docker ps -aq | xargs -r docker stop &&
+            docker ps -aq | xargs -r docker rm &&
             docker-compose pull &&
             docker-compose up -d &&
             docker image prune -f &&
-            echo 'Deployment completed successfully!'
+            echo 'Deployment completed!'
           "
