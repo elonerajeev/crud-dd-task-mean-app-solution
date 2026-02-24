@@ -19,7 +19,7 @@ services:
 
   # Backend
   backend:
-    image: ${DOCKER_USERNAME}/backend:prod
+    image: elonerajeev/mean-crud-backend:latest
     container_name: backend
     restart: always
     expose:
@@ -34,11 +34,11 @@ services:
 
   # Frontend
   frontend:
-    image: ${DOCKER_USERNAME}/frontend:prod
+    image: elonerajeev/mean-crud-frontend:latest
     container_name: frontend
     restart: always
     ports:
-      - "80:80"
+      - "8082:80"
     depends_on:
       - backend
     networks:
@@ -48,7 +48,7 @@ services:
 volumes:
   mongo_data:
 
-    # Networks
+# Networks
 networks:
   mean_network:
     driver: bridge
